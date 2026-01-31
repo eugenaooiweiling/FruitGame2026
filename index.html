@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P5 Average Adventure</title>
+<style>
+  body{font-family:'Comic Sans MS',sans-serif;text-align:center;background:#e0f7fa;padding:20px;touch-action:manipulation;}
+  #game{background:#fff;max-width:600px;margin:0 auto;padding:20px;border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,0.1)}
+  .piles{display:flex;justify-content:space-around;align-items:flex-end;height:250px;border-bottom:4px solid #aaa;margin-bottom:20px}
+  .col{width:70px;background:#eee;border-radius:10px 10px 0 0;cursor:pointer;display:flex;flex-direction:column-reverse;align-items:center;padding-bottom:5px;transition:0.2s}
+  .col.sel{border:4px solid #0288d1;background:#b3e5fc}
+  .ball{width:45px;height:45px;line-height:45px;font-size:28px;}
+  .btn{background:#00897b;color:#fff;border:none;padding:15px 30px;font-size:20px;border-radius:50px;cursor:pointer;margin-top:15px}
+  .card{background:#263238;color:#ffeb3b;padding:15px;border-radius:10px;font-size:24px;font-family:monospace}
+  input{font-size:24px;width:80px;text-align:center;border:2px solid #ccc;border-radius:10px;padding:5px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<h1>Average Adventure 📊</h1>
+<div id="game">
+ <div style="display:flex;justify-content:space-between;font-size:1.2rem;font-weight:bold;color:#555">
+   <span>Q: <span id="q">1</span>/10</span><span>Score: <span id="s">0</span></span>
+ </div>
+ <h2 id="instr" style="color:#00796b">Loading...</h2>
+ 
+ <div id="vis" class="hidden">
+  <div class="piles" id="stage"></div>
+  <p style="color:#666">Tap a tall stack to take 1. Tap a short stack to give 1.</p>
+ </div>
+
+ <div id="calc" class="hidden">
+  <div id="cards" style="display:flex;justify-content:center;gap:15px;margin:30px 0"></div>
+  <p style="font-size:1.2rem">Total: <span id="tot" style="font-weight:bold">?</span> <br><br> Average: <input type="number" id="ans"></p>
+ </div>
+
+ <h3 id="msg" style="height:30px;color:#d32f2f"></h3>
+ <button id="check" class="btn" onclick="check()">Check Answer</button>
+ <button id="next" class="btn hidden" onclick="next()" style="background:#0277bd">Next Question ➡️</button>
+</div>
+
+<script>
+let q=1,sc=0,mode,nums=[],sel=-1,avg;
+window.onload=next;
+
+function next(){
+ if(q>10){document.body.innerHTML="<h1>🎉 Done! Score: "+sc+"/10</h1><button class='btn' onclick='location.reload()'>Play Again</button>";return;}
+ document.getElementById('q').innerText=q; document.getElementById('s').innerText=sc;
+ document.getElementById('msg').innerText=""; document.getElementById('check').classList.remove('hidden');
+ document.getElementById('next').classList.add('hidden'); document.getElementById('ans').value="";
+ 
+ // Randomly pick mode (Visual or Calc)
+ if(Math.random()>0.5 || q<4) initVis(); else initCalc();
+}
+
+function initVis(){
+ mode='vis'; document.getElementById('vis').classList.remove('hidden'); document.getElementById('calc').classList.add('hidden');
+ document.getElementById('instr').innerText="Make the stacks EQUAL";
+ avg = Math.floor(Math.random()*3)+3;
+ nums=[avg,avg,avg]; nums[0]--; nums[1]++; // Scramble
+ if(Math.random()>.5){nums.push(avg); nums[2]--; nums[3]++;}
+ draw();
+}
+
+function draw(){
+ let h="";
+ nums.forEach((n,i)=>{
+  let c = i===sel?"col sel":"col";
+  let b=""; for(let j=0;j<n;j++)b+="<div class='ball'>🔴</div>";
+  h+=`<div class="${c}" onclick="clickPile(${i})">${b}<div style='font-weight:bold;margin-top:5px'>${n}</div></div>`;
+ });
+ document.getElementById('stage').innerHTML=h;
+}
+
+function clickPile(i){
+ if(sel===-1 && nums[i]>0) sel=i; // Pick up
+ else if(sel!==-1){
+  if(sel!==i){nums[sel]--; nums[i]++;} // Drop
+  sel=-1;
+ }
+ draw();
+}
+
+function initCalc(){
+ mode='calc'; document.getElementById('vis').classList.add('hidden'); document.getElementById('calc').classList.remove('hidden');
+ document.getElementById('instr').innerText="Calculate the Average";
+ avg=Math.floor(Math.random()*10)+5;
+ let vals=[avg-2,avg+2,avg+1,avg-1];
+ document.getElementById('cards').innerHTML=vals.map(v=>`<div class='card'>${v}</div>`).join('');
+ document.getElementById('tot').innerText="?";
+}
+
+function check(){
+ let ok=false;
+ if(mode==='vis') ok=nums.every(n=>n===nums[0]);
+ else ok=parseInt(document.getElementById('ans').value)===avg;
+ 
+ if(ok){
+  document.getElementById('msg').innerText="🌟 Correct! 🌟"; document.getElementById('msg').style.color="#388e3c";
+  sc++; q++;
+  document.getElementById('check').classList.add('hidden');
+  document.getElementById('next').classList.remove('hidden');
+ }else{
+  document.getElementById('msg').innerText="Not equal yet. Try again!"; document.getElementById('msg').style.color="#d32f2f";
+ }
+}
+</script>
+</body>
+</html>
