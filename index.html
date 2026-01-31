@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P5 Math: Mastering Average</title>
+    <style>
+        /* SINGAPORE MOE STYLE - Clean, Engaging, Mobile Friendly */
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+
+        /* GAME CONTAINER */
+        #game-area {
+            background: white;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        /* DASHBOARD */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* INTERACTIVE ZONES */
+        .container-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            margin-bottom: 20px;
+            border-bottom: 4px solid #bdc3c7;
+        }
+
+        .group-container {
+            width: 100px;
+            background-color: rgba(236, 240, 241, 0.5);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            flex-direction: column-reverse; /* Stacks items from bottom */
+            align-items: center;
+            padding-bottom: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .group-container:hover { background-color: #e3e6e8; }
+        .group-container.selected { border: 3px solid #3498db; background-color: #d6eaf8; }
+
+        .group-label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* ITEMS (Fruits/Basketballs) */
+        .item {
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            line-height: 40px;
+            text-align: center;
+            margin-bottom: 2px;
+            animation: dropIn 0.3s ease-out;
+        }
+
+        /* BASKETBALL SCOREBOARD STYLE */
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .score-card {
+            background: black;
+            color: #f1c40f;
+            padding: 15px;
+            border-radius: 5px;
+            width: 80px;
+            font-family: 'Courier New', monospace;
+        }
+        .score-title { font-size: 0.8rem; color: #aaa; }
+        .score-val { font-size: 2rem; font-weight: bold; }
+
+        /* CONTROLS */
+        .controls { margin-top: 20px; }
+        input[type="number"] {
+            font-size: 1.5rem;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #219150;
+            transition: transform 0.1s;
+        }
+        button:active { transform: translateY(5px); box-shadow: none; }
+        button.secondary { background-color: #3498db; box-shadow: 0 5px 0 #2980b9; }
+
+        /* FEEDBACK MODAL */
+        #feedback {
+            font-size: 1.5rem;
+            font-weight: bold;
+            height: 30px;
+            margin-top: 10px;
+        }
+        .correct { color: #27ae60; }
+        .wrong { color: #c0392b; }
+
+        @keyframes dropIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <h1>Average Adventure 📊</h1>
+    <div class="subtitle
